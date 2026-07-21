@@ -1,0 +1,950 @@
+===============================================================================
+     HƯỚNG DẪN VẼ SƠ ĐỒ ĐỒ ÁN POS QR-CODE BẰNG STARUML
+                    (Từng bước chi tiết)
+===============================================================================
+
+Phần mềm: StarUML (tải tại https://staruml.io)
+Sau khi cài đặt, mở StarUML → sẽ thấy project mặc định "Untitled".
+
+
+╔═════════════════════════════════════════════════════════════════════════════╗
+║           PHẦN 1: USE CASE DIAGRAM (Sơ đồ trường hợp sử dụng)            ║
+╚═════════════════════════════════════════════════════════════════════════════╝
+
+═══ BƯỚC 1: Tạo Use Case Diagram ═══
+
+  1. Mở StarUML, nhìn bên trái có panel "Model Explorer"
+  2. Click phải vào "Untitled" → Add Diagram → Use Case Diagram
+  3. Đặt tên: "Use Case Diagram - POS QR-CODE"
+
+═══ BƯỚC 2: Thêm khung hệ thống (System Boundary) ═══
+
+  1. Nhìn thanh công cụ bên trái (Toolbox), tìm mục "Use Case"
+  2. Click vào biểu tượng "System Boundary" (hình chữ nhật)
+  3. Kéo vẽ một hình chữ nhật lớn ở giữa canvas
+  4. Double-click vào tiêu đề → gõ: "Hệ thống POS QR-CODE"
+
+═══ BƯỚC 3: Thêm các Actor (3 tác nhân) ═══
+
+  Trong Toolbox → click "Actor" (hình người que)
+  Đặt bên NGOÀI hình chữ nhật hệ thống:
+
+  BÊN TRÁI:
+    1. Kéo thả Actor → double-click đặt tên: "Admin"
+    2. Kéo thả Actor → double-click đặt tên: "Nhân viên"
+
+  BÊN PHẢI:
+    3. Kéo thả Actor → double-click đặt tên: "Khách hàng"
+
+═══ BƯỚC 4: Thêm các Use Case (14 oval) ═══
+
+  Trong Toolbox → click "Use Case" (hình oval)
+  Kéo thả vào BÊN TRONG hình chữ nhật hệ thống.
+  Double-click từng oval để đặt tên:
+
+  Hàng trên (chức năng quản trị):
+    1.  "Xác thực và phân quyền"
+    2.  "Quản lý sản phẩm"
+    3.  "Quản lý kho hàng"
+    4.  "Quản lý nhân viên"
+
+  Hàng giữa (chức năng vận hành):
+    5.  "Quản lý khách hàng"
+    6.  "Quản lý ca làm việc"
+    7.  "Báo cáo doanh thu"
+    8.  "Cài đặt cửa hàng"
+
+  Hàng dưới (chức năng bán hàng):
+    9.  "Bán hàng"
+    10. "Quét mã vạch"
+    11. "Thanh toán"
+    12. "Tạo hóa đơn"
+    13. "Tích điểm thành viên"
+    14. "AI phân tích tồn kho"
+
+═══ BƯỚC 5: Nối Actor với Use Case ═══
+
+  Trong Toolbox → click "Association" (đường thẳng liền)
+  Kéo từ Actor đến Use Case:
+
+  Admin nối đến:
+    → Xác thực và phân quyền
+    → Quản lý sản phẩm
+    → Quản lý kho hàng
+    → Quản lý nhân viên
+    → Quản lý khách hàng
+    → Quản lý ca làm việc
+    → Báo cáo doanh thu
+    → Cài đặt cửa hàng
+    → AI phân tích tồn kho
+
+  Nhân viên nối đến:
+    → Xác thực và phân quyền
+    → Bán hàng
+    → Quét mã vạch
+    → Quản lý khách hàng
+    → Quản lý ca làm việc
+    → AI phân tích tồn kho
+
+  Khách hàng nối đến:
+    → Thanh toán
+    → Tích điểm thành viên
+
+═══ BƯỚC 6: Thêm quan hệ <<include>> và <<extend>> ═══
+
+  Trong Toolbox → click "Include" (đường đứt nét có mũi tên)
+  Kéo từ UC nguồn → UC đích:
+
+  <<include>> (đường đứt nét, mũi tên hướng về UC được include):
+    Bán hàng ──<<include>>──> Thanh toán
+    Thanh toán ──<<include>>──> Tạo hóa đơn
+
+  Trong Toolbox → click "Extend" (đường đứt nét có mũi tên)
+    Quét mã vạch ──<<extend>>──> Bán hàng
+    Tích điểm thành viên ──<<extend>>──> Thanh toán
+
+═══ BƯỚC 7: Lưu file ═══
+
+  File → Save As → đặt tên: "POS_QR_CODE.mdj"
+
+
+╔═════════════════════════════════════════════════════════════════════════════╗
+║           PHẦN 2: ĐẶC TẢ USE CASE (Viết trong Word/Google Docs)          ║
+╚═════════════════════════════════════════════════════════════════════════════╝
+
+Phần này KHÔNG vẽ trong StarUML, viết thành bảng trong Word hoặc Google Docs.
+Mỗi Use Case quan trọng viết theo format sau:
+
+───────────────────────────────────────────────────────────────────────────────
+UC01: Đăng nhập
+───────────────────────────────────────────────────────────────────────────────
+  Tác nhân:       Admin, Nhân viên
+  Mô tả:          Người dùng đăng nhập để sử dụng hệ thống
+  Tiền điều kiện: Có tài khoản hợp lệ
+
+  Luồng chính:
+    1. Nhập username và password
+    2. Nhấn "Đăng nhập"
+    3. Hệ thống xác thực thông tin
+    4. Đăng nhập thành công, chuyển đến trang phù hợp vai trò
+
+  Luồng thay thế:
+    3a. Sai thông tin → Hiển thị lỗi, quay lại bước 1
+
+  Hậu điều kiện: Người dùng được xác thực và vào hệ thống
+
+───────────────────────────────────────────────────────────────────────────────
+UC07: Bán hàng
+───────────────────────────────────────────────────────────────────────────────
+  Tác nhân:       Nhân viên
+  Mô tả:          Thu ngân tạo đơn hàng cho khách
+  Tiền điều kiện: Đã đăng nhập, đã mở ca làm việc
+
+  Luồng chính:
+    1. Quét mã vạch hoặc tìm kiếm sản phẩm
+    2. Thêm sản phẩm vào giỏ hàng
+    3. Chọn khách hàng thành viên (nếu có)
+    4. Chọn phương thức thanh toán (tiền mặt / QR)
+    5. Xác nhận thanh toán
+    6. Hệ thống tạo đơn, trừ kho, tích điểm
+    7. Hiển thị hóa đơn
+
+  Luồng thay thế:
+    1a. Sản phẩm hết hàng → Báo lỗi
+    5a. Chọn QR → Hiển thị mã QR, chờ xác nhận từ ngân hàng
+
+  Hậu điều kiện: Đơn hàng được tạo, tồn kho được cập nhật
+
+───────────────────────────────────────────────────────────────────────────────
+UC08: Quét mã vạch
+───────────────────────────────────────────────────────────────────────────────
+  Tác nhân:       Nhân viên
+  Mô tả:          Dùng điện thoại quét mã vạch gửi về máy tính bán hàng
+  Tiền điều kiện: Đã đăng nhập trên cả laptop và điện thoại
+
+  Luồng chính:
+    1. Mở trang Scanner trên điện thoại
+    2. Điện thoại kết nối WebSocket với máy tính
+    3. Quét mã vạch bằng camera
+    4. Mã vạch được gửi real-time đến trang POS trên laptop
+    5. Sản phẩm tự động thêm vào giỏ hàng
+
+  Luồng thay thế:
+    4a. Không tìm thấy sản phẩm → Báo lỗi trên điện thoại
+
+  Hậu điều kiện: Sản phẩm được thêm vào giỏ hàng
+
+───────────────────────────────────────────────────────────────────────────────
+UC09: Thanh toán
+───────────────────────────────────────────────────────────────────────────────
+  Tác nhân:       Nhân viên, Khách hàng
+  Mô tả:          Thực hiện thanh toán bằng tiền mặt hoặc QR chuyển khoản
+  Tiền điều kiện: Giỏ hàng có sản phẩm
+
+  Luồng chính:
+    1. Chọn phương thức thanh toán
+    2a. Tiền mặt: Nhập số tiền khách đưa → Tính tiền thối
+    2b. QR: Hiển thị mã QR VietQR → Khách quét → Hệ thống tự xác nhận
+    3. Hệ thống tạo đơn hàng, trừ kho
+    4. Tạo hóa đơn
+
+  Luồng thay thế:
+    2b. Khách không chuyển khoản → Thu ngân hủy đơn
+
+  Hậu điều kiện: Đơn hàng hoàn tất, hóa đơn được tạo
+
+───────────────────────────────────────────────────────────────────────────────
+UC06: Quản lý ca làm việc
+───────────────────────────────────────────────────────────────────────────────
+  Tác nhân:       Nhân viên, Admin
+  Mô tả:          Mở ca, đóng ca, đối soát két tiền
+  Tiền điều kiện: Đã đăng nhập
+
+  Luồng chính:
+    1. Mở ca: Nhập tiền mặt đầu ca → Bắt đầu bán hàng
+    2. Đóng ca: Hệ thống tính tổng doanh thu → Nhập tiền thực tế
+    3. Hệ thống so sánh tiền dự kiến và thực tế
+    4. Hiển thị chênh lệch (nếu có)
+
+  Luồng thay thế:
+    1a. Đã có ca đang mở → Báo lỗi
+
+  Hậu điều kiện: Ca được mở/đóng, chênh lệch két tiền được ghi nhận
+
+───────────────────────────────────────────────────────────────────────────────
+UC02: Quản lý sản phẩm
+───────────────────────────────────────────────────────────────────────────────
+  Tác nhân:       Admin
+  Mô tả:          Thêm, sửa, xóa sản phẩm. Tự động tra cứu từ Internet
+  Tiền điều kiện: Đã đăng nhập với quyền Admin
+
+  Luồng chính:
+    1. Mở trang Quản lý sản phẩm
+    2. Thêm mới: Quét mã vạch → Hệ thống tự tra cứu tên, ảnh từ Internet
+    3. Bổ sung giá bán, giá vốn, danh mục
+    4. Lưu sản phẩm
+
+  Luồng thay thế:
+    2a. Không tra cứu được → Nhập tay thông tin
+
+  Hậu điều kiện: Sản phẩm được cập nhật trong hệ thống
+
+───────────────────────────────────────────────────────────────────────────────
+UC14: AI phân tích tồn kho
+───────────────────────────────────────────────────────────────────────────────
+  Tác nhân:       Admin
+  Mô tả:          AI tự động thu thập dữ liệu tồn kho, phân tích và
+                  gửi báo cáo + dự đoán nhập hàng cho Admin
+  Tiền điều kiện: Đã đăng nhập với quyền Admin
+
+  Luồng chính:
+    1. Admin mở trang Báo cáo AI
+    2. AI tự động thu thập dữ liệu tồn kho từ database
+    3. AI phân tích: sản phẩm sắp hết, bán chạy, bán chậm
+    4. AI đưa ra dự đoán số lượng cần nhập hàng
+    5. Hiển thị báo cáo tồn kho + đề xuất nhập hàng
+
+  Luồng thay thế:
+    2a. AI Model không khả dụng → Báo lỗi
+
+  Hậu điều kiện: Báo cáo AI được hiển thị cho Admin
+
+
+╔═════════════════════════════════════════════════════════════════════════════╗
+║           PHẦN 3: ACTIVITY DIAGRAM (Sơ đồ hoạt động)                     ║
+╚═════════════════════════════════════════════════════════════════════════════╝
+
+═══ CÁCH TẠO ACTIVITY DIAGRAM TRONG STARUML ═══
+
+  1. Click phải vào project "Untitled" trong Model Explorer
+  2. Add Diagram → Activity Diagram
+  3. Đặt tên cho diagram
+
+  Các công cụ trong Toolbox cần dùng:
+    ● Initial Node    = nút tròn đen (●) bắt đầu
+    ● Activity Final  = nút tròn đen có viền (◉) kết thúc
+    ● Action          = hình chữ nhật bo góc (hành động)
+    ● Decision        = hình thoi ◇ (rẽ nhánh)
+    ● Fork/Join       = thanh ngang đen đậm (luồng song song)
+    ● Control Flow    = mũi tên nối các node
+
+  Cách nối: click "Control Flow" → kéo từ node này sang node kia
+  Ghi điều kiện: click vào đường mũi tên → trong Properties gõ Guard
+
+───────────────────────────────────────────────────────────────────────────────
+3.1. ACTIVITY: ĐĂNG NHẬP
+───────────────────────────────────────────────────────────────────────────────
+
+  Tạo diagram mới: Add Diagram → Activity Diagram → tên "AD - Đăng nhập"
+
+  Bước 1: Kéo thả "Initial Node" (●) lên trên cùng
+
+  Bước 2: Kéo thả "Action" phía dưới → đặt tên: "Nhập username, password"
+          Nối ● → Action bằng Control Flow
+
+  Bước 3: Kéo thả "Action" → tên: "Nhấn Đăng nhập"
+          Nối Action trước → Action này
+
+  Bước 4: Kéo thả "Decision" (◇) phía dưới
+          Nối Action → Decision
+
+  Bước 5: Từ Decision, tạo 2 nhánh:
+          Nhánh KHÔNG hợp lệ:
+            → Kéo "Action" → tên: "Hiển thị lỗi"
+            → Click vào mũi tên → Properties → Guard: "[Sai thông tin]"
+
+          Nhánh CÓ hợp lệ:
+            → Kéo "Action" → tên: "Tạo JWT Token"
+            → Click vào mũi tên → Properties → Guard: "[Hợp lệ]"
+
+  Bước 6: Sau "Tạo JWT Token", thêm Decision (◇) mới cho Role:
+          → Nhánh [admin]: Action "Chuyển đến Dashboard"
+          → Nhánh [cashier]: Action "Chuyển đến trang POS"
+
+  Bước 7: Nối tất cả nhánh cuối về "Activity Final" (◉)
+
+  Kết quả:
+    (●) → [Nhập user/pass] → [Nhấn Đăng nhập] → ◇
+    ◇ ─[Sai]─→ [Hiển thị lỗi] → (◉)
+    ◇ ─[Đúng]→ [Tạo JWT Token] → ◇
+                                   ◇ ─[admin]──→ [→ Dashboard] → (◉)
+                                   ◇ ─[cashier]→ [→ Trang POS] → (◉)
+
+───────────────────────────────────────────────────────────────────────────────
+3.2. ACTIVITY: BÁN HÀNG
+───────────────────────────────────────────────────────────────────────────────
+
+  Tạo: Add Diagram → Activity Diagram → tên "AD - Bán hàng"
+
+  Bước 1: (●) Initial Node
+
+  Bước 2: Action "Quét mã vạch / Tìm sản phẩm"
+
+  Bước 3: Action "Thêm vào giỏ hàng"
+
+  Bước 4: Decision ◇ "Thêm SP nữa?"
+          → [Có]: quay lại bước 2 (vẽ mũi tên vòng lên)
+          → [Không]: tiếp tục xuống
+
+  Bước 5: Action "Chọn khách hàng (tùy chọn)"
+
+  Bước 6: Action "Chọn phương thức thanh toán"
+
+  Bước 7: Decision ◇ "Phương thức?"
+          → [Tiền mặt]: Action "Nhập tiền khách đưa"
+          → [QR]: Action "Hiển thị mã QR" → Decision ◇ "Đã nhận tiền?"
+                  → [Chưa]: vòng lại chờ
+                  → [Rồi]: tiếp tục
+
+  Bước 8: Merge (hợp nhất 2 nhánh) → Action "Tạo đơn hàng + Trừ kho"
+
+  Bước 9: Action "Tích điểm (nếu có KH)"
+
+  Bước 10: Action "Hiển thị hóa đơn"
+
+  Bước 11: (◉) Activity Final
+
+───────────────────────────────────────────────────────────────────────────────
+3.3. ACTIVITY: QUÉT MÃ VẠCH BẰNG ĐIỆN THOẠI
+───────────────────────────────────────────────────────────────────────────────
+
+  Tạo: Add Diagram → Activity Diagram → tên "AD - Quét mã vạch"
+
+  Bước 1: (●) Initial Node
+
+  Bước 2: Fork (thanh ngang đen) → chia 2 luồng song song:
+          Luồng trái: Action "Laptop: Mở trang POS"
+                      → Action "Kết nối WebSocket"
+          Luồng phải: Action "ĐT: Mở trang Scanner"
+                      → Action "Kết nối WebSocket"
+
+  Bước 3: Join (thanh ngang đen) → hợp nhất 2 luồng
+
+  Bước 4: Action "ĐT quét mã vạch bằng camera"
+
+  Bước 5: Action "Gửi mã vạch qua WebSocket → Laptop"
+
+  Bước 6: Decision ◇ "Tìm thấy SP?"
+          → [Không]: Action "Báo lỗi" → (◉)
+          → [Có]: Action "Thêm vào giỏ hàng" → (◉)
+
+───────────────────────────────────────────────────────────────────────────────
+3.4. ACTIVITY: THANH TOÁN QR CHUYỂN KHOẢN
+───────────────────────────────────────────────────────────────────────────────
+
+  Tạo: Add Diagram → Activity Diagram → tên "AD - Thanh toán QR"
+
+  Bước 1: (●) → Action "Tạo đơn hàng (trạng thái chờ)"
+
+  Bước 2: Action "Tạo mã QR VietQR"
+
+  Bước 3: Action "Hiển thị mã QR cho khách"
+
+  Bước 4: Action "Khách quét QR bằng app ngân hàng"
+
+  Bước 5: Action "Khách xác nhận chuyển tiền"
+
+  Bước 6: Action "Ngân hàng gửi webhook → Backend"
+
+  Bước 7: Action "Cập nhật đơn: đã thanh toán"
+
+  Bước 8: Action "Hiển thị Thành công" → (◉)
+
+───────────────────────────────────────────────────────────────────────────────
+3.5. ACTIVITY: QUẢN LÝ CA LÀM VIỆC
+───────────────────────────────────────────────────────────────────────────────
+
+  Tạo: Add Diagram → Activity Diagram → tên "AD - Quản lý ca"
+
+  Bước 1: (●) → Decision ◇ "Có ca đang mở?"
+
+  Bước 2: Nhánh [Không - Mở ca]:
+          → Action "Nhập tiền mặt đầu ca"
+          → Action "Mở ca thành công"
+          → (◉)
+
+  Bước 3: Nhánh [Có - Đóng ca]:
+          → Action "Nhấn Đóng ca"
+          → Action "Hệ thống tính tổng doanh thu"
+          → Action "Nhập tiền thực tế trong két"
+          → Decision ◇ "Chênh lệch?"
+            → [= 0]: Action "Két tiền khớp ✓"
+            → [≠ 0]: Action "Cảnh báo chênh lệch ⚠️"
+          → Merge → Action "Đóng ca thành công"
+          → (◉)
+
+───────────────────────────────────────────────────────────────────────────────
+3.6. ACTIVITY: NHẬP KHO
+───────────────────────────────────────────────────────────────────────────────
+
+  Tạo: Add Diagram → Activity Diagram → tên "AD - Nhập kho"
+
+  Bước 1: (●) → Action "Chọn sản phẩm"
+
+  Bước 2: Action "Chọn loại: Nhập / Xuất / Điều chỉnh"
+
+  Bước 3: Action "Nhập số lượng + ghi chú"
+
+  Bước 4: Action "Xác nhận"
+
+  Bước 5: Decision ◇ "Hợp lệ?"
+          → [Không]: Action "Báo lỗi" → (◉)
+          → [Có]: Action "Cập nhật tồn kho + Ghi log" → (◉)
+
+───────────────────────────────────────────────────────────────────────────────
+3.7. ACTIVITY: THÊM SẢN PHẨM MỚI
+───────────────────────────────────────────────────────────────────────────────
+
+  Tạo: Add Diagram → Activity Diagram → tên "AD - Thêm sản phẩm"
+
+  Bước 1: (●) → Action "Quét mã vạch sản phẩm mới"
+
+  Bước 2: Decision ◇ "Mã vạch đã có?"
+          → [Có]: Action "Báo Đã tồn tại" → (◉)
+          → [Không]: Action "Tra cứu từ Internet"
+
+  Bước 3: Decision ◇ "Tìm thấy?"
+          → [Có]: Action "Tự điền tên, ảnh, mô tả"
+          → [Không]: Action "Nhập tay thông tin"
+
+  Bước 4: Merge → Action "Bổ sung giá, danh mục"
+
+  Bước 5: Action "Lưu sản phẩm" → (◉)
+
+───────────────────────────────────────────────────────────────────────────────
+3.8. ACTIVITY: AI PHÂN TÍCH TỒN KHO & DỰ ĐOÁN NHẬP HÀNG
+───────────────────────────────────────────────────────────────────────────────
+
+  Tạo: Add Diagram → Activity Diagram → tên "AD - AI phân tích tồn kho"
+
+  Bước 1: (●) → Action "Admin mở trang Báo cáo AI"
+
+  Bước 2: Action "AI thu thập dữ liệu tồn kho từ DB"
+
+  Bước 3: Action "AI phân tích: SP sắp hết, bán chạy, bán chậm"
+
+  Bước 4: Action "AI dự đoán số lượng cần nhập hàng"
+
+  Bước 5: Action "Hiển thị báo cáo + đề xuất nhập hàng"
+
+  Bước 6: (◉)
+
+
+╔═════════════════════════════════════════════════════════════════════════════╗
+║           PHẦN 4: SEQUENCE DIAGRAM (Sơ đồ tuần tự)                       ║
+╚═════════════════════════════════════════════════════════════════════════════╝
+
+═══ CÁCH TẠO SEQUENCE DIAGRAM TRONG STARUML ═══
+
+  1. Click phải vào project → Add Diagram → Sequence Diagram
+  2. Đặt tên cho diagram
+
+  Các công cụ trong Toolbox cần dùng:
+    ● Lifeline        = đường sống (hình chữ nhật + đường đứt dọc)
+    ● Message         = mũi tên liền (gọi hàm/gửi request)
+    ● Return Message  = mũi tên đứt nét (trả về kết quả)
+    ● Combined Fragment = khung bao quanh (alt/loop/opt)
+
+  Cách tạo Lifeline: click "Lifeline" trong Toolbox → click lên canvas
+                     → double-click đặt tên
+
+  Cách tạo Message: click "Message" → kéo từ Lifeline này sang Lifeline kia
+                    → double-click vào mũi tên để ghi tên message
+
+  Cách tạo Fragment: click "Combined Fragment" → kéo vẽ khung bao
+                     → trong Properties chọn operator: alt/loop/opt
+                     → click phải vào fragment → Add Operand (thêm nhánh)
+
+───────────────────────────────────────────────────────────────────────────────
+4.1. SEQUENCE: ĐĂNG NHẬP
+───────────────────────────────────────────────────────────────────────────────
+
+  Tạo: Add Diagram → Sequence Diagram → tên "SD - Đăng nhập"
+
+  Bước 1: Tạo 4 Lifeline (kéo thả từ trái sang phải):
+          "Người dùng"  |  "Frontend"  |  "Backend"  |  "Database"
+
+  Bước 2: Vẽ các Message (mũi tên liền, từ trái sang phải):
+          Người dùng → Frontend:    "Nhập username, password"
+          Frontend → Backend:       "POST /api/auth/login"
+          Backend → Database:       "SELECT * FROM users WHERE username=?"
+
+  Bước 3: Vẽ các Return Message (mũi tên đứt, từ phải sang trái):
+          Database → Backend:       "Trả về user"
+
+  Bước 4: Vẽ Message nội bộ (Self Message):
+          Backend → Backend:        "Kiểm tra mật khẩu + Tạo JWT Token"
+          (Kéo mũi tên từ Backend quay lại chính nó)
+
+  Bước 5: Vẽ Return:
+          Backend → Frontend:       "{token, user}"
+          Frontend → Người dùng:    "Chuyển đến trang chính"
+
+───────────────────────────────────────────────────────────────────────────────
+4.2. SEQUENCE: QUÉT MÃ VẠCH TỪ ĐIỆN THOẠI
+───────────────────────────────────────────────────────────────────────────────
+
+  Tạo: Add Diagram → Sequence Diagram → tên "SD - Quét mã vạch"
+
+  Bước 1: Tạo 4 Lifeline:
+          "Thu ngân"  |  "ĐT Scanner"  |  "Socket.IO Server"  |  "POS Laptop"
+
+  Bước 2: Vẽ Message kết nối ban đầu:
+          POS Laptop → Socket.IO Server:    "Kết nối + join room"
+          ĐT Scanner → Socket.IO Server:    "Kết nối + join room"
+
+  Bước 3: Tạo Combined Fragment loại "loop" bao quanh phần quét:
+          Click phải fragment → Properties → Operator: loop
+          Ghi tên: "Quét liên tục"
+
+          Bên trong loop, vẽ:
+          Thu ngân → ĐT Scanner:            "Quét mã vạch bằng camera"
+          ĐT Scanner → Socket.IO Server:    "Gửi barcode"
+          Socket.IO Server → POS Laptop:    "Chuyển tiếp barcode"
+          POS Laptop → POS Laptop:          "Thêm SP vào giỏ hàng"
+          POS Laptop → Socket.IO Server:    "Gửi phản hồi"
+          Socket.IO Server → ĐT Scanner:    "Hiển thị kết quả"
+
+───────────────────────────────────────────────────────────────────────────────
+4.3. SEQUENCE: TẠO ĐƠN HÀNG (TIỀN MẶT)
+───────────────────────────────────────────────────────────────────────────────
+
+  Tạo: Add Diagram → Sequence Diagram → tên "SD - Tạo đơn hàng"
+
+  Bước 1: Tạo 4 Lifeline:
+          "Thu ngân"  |  "Frontend"  |  "Backend"  |  "Database"
+
+  Bước 2: Vẽ Message:
+          Thu ngân → Frontend:       "Chọn SP + Nhấn Thanh toán"
+          Frontend → Backend:        "POST /api/orders {items, payment:'cash'}"
+          Backend → Database:        "Kiểm tra tồn kho"
+          Backend → Database:        "INSERT orders + order_items"
+          Backend → Database:        "UPDATE products (trừ kho)"
+
+  Bước 3: Tạo Combined Fragment loại "opt" (tùy chọn):
+          Ghi điều kiện: "Có khách thành viên"
+          Bên trong:
+          Backend → Database:        "UPDATE customers (tích điểm)"
+          Backend → Database:        "INSERT point_transactions"
+
+  Bước 4: Vẽ Return:
+          Backend → Frontend:        "{success, order_data}"
+          Frontend → Thu ngân:       "Hiển thị hóa đơn"
+
+───────────────────────────────────────────────────────────────────────────────
+4.4. SEQUENCE: THANH TOÁN QR CHUYỂN KHOẢN
+───────────────────────────────────────────────────────────────────────────────
+
+  Tạo: Add Diagram → Sequence Diagram → tên "SD - Thanh toán QR"
+
+  Bước 1: Tạo 5 Lifeline:
+          "Thu ngân" | "Frontend" | "Backend" | "Database" | "Ngân hàng"
+
+  Bước 2: Vẽ Message tạo đơn:
+          Thu ngân → Frontend:       "Chọn QR Chuyển khoản"
+          Frontend → Backend:        "POST /api/orders {payment:'qr_transfer'}"
+          Backend → Database:        "INSERT orders (status='pending')"
+          Backend → Frontend:        "{order_code, total_amount}"
+          Frontend → Frontend:       "Tạo mã QR VietQR"
+          Frontend → Thu ngân:       "Hiển thị mã QR"
+
+  Bước 3: Tạo Combined Fragment loại "loop":
+          Ghi tên: "Polling mỗi 2.5 giây"
+          Bên trong:
+          Frontend → Backend:        "GET /api/orders/{id}"
+          Backend → Frontend:        "{status: 'pending'}"
+
+  Bước 4: Vẽ Message webhook (bên ngoài loop):
+          Ngân hàng → Backend:       "Webhook: khách đã chuyển tiền"
+          Backend → Database:        "UPDATE orders (status='paid')"
+
+  Bước 5: Vẽ Message cuối:
+          Frontend → Backend:        "GET /api/orders/{id}"
+          Backend → Frontend:        "{status: 'paid'}"
+          Frontend → Thu ngân:       "Thanh toán thành công!"
+
+───────────────────────────────────────────────────────────────────────────────
+4.5. SEQUENCE: MỞ CA / ĐÓNG CA
+───────────────────────────────────────────────────────────────────────────────
+
+  Tạo: Add Diagram → Sequence Diagram → tên "SD - Quản lý ca"
+
+  Bước 1: Tạo 4 Lifeline:
+          "Thu ngân"  |  "Frontend"  |  "Backend"  |  "Database"
+
+  Bước 2: Vẽ phần MỞ CA (thêm ghi chú "Mở ca" bằng Note):
+          Thu ngân → Frontend:       "Nhập tiền đầu ca, nhấn Mở ca"
+          Frontend → Backend:        "POST /api/shifts/open {opening_cash}"
+          Backend → Database:        "INSERT shifts (status='open')"
+          Backend → Frontend:        "{success}"
+
+  Bước 3: Vẽ phần ĐÓNG CA (thêm ghi chú "Đóng ca"):
+          Thu ngân → Frontend:       "Nhấn Đóng ca"
+          Frontend → Backend:        "GET /api/shifts/current"
+          Backend → Database:        "Thống kê đơn hàng trong ca"
+          Backend → Frontend:        "{total_sales, expected_cash}"
+          Thu ngân → Frontend:       "Nhập tiền thực tế, nhấn Xác nhận"
+          Frontend → Backend:        "POST /api/shifts/close {closing_cash}"
+          Backend → Backend:         "Tính chênh lệch"
+          Backend → Database:        "UPDATE shifts (status='closed')"
+          Backend → Frontend:        "{success, chênh lệch}"
+
+
+╔═════════════════════════════════════════════════════════════════════════════╗
+║           PHẦN 5: CLASS DIAGRAM (Sơ đồ lớp)                              ║
+╚═════════════════════════════════════════════════════════════════════════════╝
+
+═══ CÁCH TẠO CLASS DIAGRAM TRONG STARUML ═══
+
+  1. Click phải vào project → Add Diagram → Class Diagram
+  2. Đặt tên: "Class Diagram - POS QR-CODE"
+
+  Các công cụ trong Toolbox cần dùng:
+    ● Class          = hình chữ nhật 3 phần (tên | thuộc tính | phương thức)
+    ● Association    = đường thẳng liền (quan hệ liên kết)
+    ● Composition    = đường có hình thoi đen ◆ (sống chết cùng)
+    ● Aggregation    = đường có hình thoi trắng ◇ (gộp lỏng)
+
+  Cách tạo Class:
+    - Click "Class" trong Toolbox → click lên canvas
+    - Double-click tên class để đổi tên
+    - Click phải class → Add → Attribute (thêm thuộc tính)
+    - Click phải class → Add → Operation (thêm phương thức)
+
+  Cách thêm thuộc tính nhanh:
+    - Chọn class → nhìn panel Properties bên phải
+    - Mục Attributes → click dấu + để thêm
+    - Gõ tên, chọn Type, đánh dấu visibility (- private / + public)
+
+═══ BƯỚC 1: Tạo 12 Class ═══
+
+  Kéo thả "Class" từ Toolbox, tạo lần lượt 12 class.
+  Sắp xếp theo vùng:
+
+  HÀNG TRÊN (3 class trung tâm, đặt ngang):
+    [User]  ────  [Order]  ────  [Customer]
+
+  HÀNG GIỮA (dưới Order và Customer):
+    [OrderItem]    [PointTransaction]
+
+  HÀNG DƯỚI TRÁI (dưới User):
+    [Shift]    [ActivityLog]    [ShiftAssignment]    [AiChatHistory]
+
+  HÀNG DƯỚI PHẢI (cạnh Product):
+    [Product]    [InventoryLog]
+
+  GÓC RIÊNG:
+    [PosSetting]
+
+═══ BƯỚC 2: Thêm thuộc tính cho từng Class ═══
+
+  Click phải từng class → Add → Attribute, thêm lần lượt:
+
+  CLASS: User
+    - id: int            (click Attribute → đánh dấu isID = true)
+    - username: string
+    - password: string
+    - full_name: string
+    - email: string
+    - phone: string
+    - role: string       (ghi chú: 'admin' hoặc 'cashier')
+    - is_active: boolean
+
+  CLASS: Product
+    - id: int
+    - name: string
+    - price: double
+    - cost_price: double
+    - stock: int
+    - category: string
+    - barcode: string
+    - image_url: string
+    - is_active: boolean
+
+  CLASS: Customer
+    - id: int
+    - name: string
+    - phone: string
+    - email: string
+    - reward_points: int
+    - total_spent: double
+    - is_active: boolean
+
+  CLASS: Order
+    - id: int
+    - order_code: string
+    - user_id: int
+    - customer_id: int
+    - total_amount: double
+    - discount: double
+    - final_amount: double
+    - points_redeemed: int
+    - points_earned: int
+    - payment_method: string
+    - status: string
+
+  CLASS: OrderItem
+    - id: int
+    - order_id: int
+    - product_id: int
+    - product_name: string
+    - quantity: int
+    - unit_price: double
+    - subtotal: double
+
+  CLASS: PointTransaction
+    - id: int
+    - customer_id: int
+    - order_id: int
+    - type: string
+    - points: int
+    - balance_before: int
+    - balance_after: int
+
+  CLASS: Shift
+    - id: int
+    - user_id: int
+    - opening_cash: double
+    - closing_cash: double
+    - total_sales: double
+    - total_orders: int
+    - status: string
+
+  CLASS: ActivityLog
+    - id: int
+    - user_id: int
+    - action: string
+    - details: string
+    - ip_address: string
+
+  CLASS: InventoryLog
+    - id: int
+    - product_id: int
+    - user_id: int
+    - type: string
+    - quantity_change: int
+
+  CLASS: PosSetting
+    - key_name: string
+    - key_value: string
+
+  CLASS: AiChatHistory
+    - id: int
+    - session_id: string
+    - user_id: int
+    - role: string
+    - content: string
+    (Ghi chú: bảng này lưu lịch sử AI phân tích,
+     không phải chatbot hỏi đáp)
+
+  CLASS: ShiftAssignment
+    - id: int
+    - user_id: int
+    - shift_date: date
+    - shift_name: string
+
+═══ BƯỚC 3: Thêm phương thức cho từng Class ═══
+
+  Click phải class → Add → Operation, thêm:
+
+  User:            + login()    + register()    + getAll()
+  Product:         + create()   + update()      + getByBarcode()    + updateStock()
+  Customer:        + searchByPhone()   + addPoints()   + redeemPoints()
+  Order:           + createOrder()     + getById()     + updateStatus()
+  OrderItem:       + create()          + getByOrderId()
+  PointTransaction: + create()         + getByCustomerId()
+  Shift:           + openShift()       + closeShift()  + getCurrentShift()
+  ActivityLog:     + logActivity()     + getAll()
+  InventoryLog:    + create()          + getAll()
+  PosSetting:      + getAll()          + update()
+  AiChatHistory:   + saveReport()      + getBySessionId()
+  ShiftAssignment: + create()          + getByDate()
+
+═══ BƯỚC 4: Vẽ quan hệ giữa các Class ═══
+
+  Dùng "Association" trong Toolbox, kéo từ class này sang class kia.
+  Sau khi vẽ, click vào đường nối → Properties → sửa multiplicity:
+
+  1. User → Order
+     Click đầu User: multiplicity = "1"
+     Click đầu Order: multiplicity = "0..*"
+
+  2. User → Shift
+     User: "1"  |  Shift: "0..*"
+
+  3. User → ActivityLog
+     User: "1"  |  ActivityLog: "0..*"
+
+  4. User → InventoryLog
+     User: "1"  |  InventoryLog: "0..*"
+
+  5. User → AiChatHistory
+     User: "1"  |  AiChatHistory: "0..*"
+
+  6. User → ShiftAssignment
+     User: "1"  |  ShiftAssignment: "0..*"
+
+  7. Customer → Order
+     Customer: "1"  |  Order: "0..*"
+
+  8. Customer → PointTransaction
+     Customer: "1"  |  PointTransaction: "0..*"
+
+  9. Order → OrderItem  (dùng "Composition" ◆ thay vì Association)
+     Order: "1"  |  OrderItem: "1..*"
+
+  10. Order → PointTransaction
+      Order: "1"  |  PointTransaction: "0..*"
+
+  11. Product → OrderItem
+      Product: "1"  |  OrderItem: "0..*"
+
+  12. Product → InventoryLog
+      Product: "1"  |  InventoryLog: "0..*"
+
+  PosSetting: KHÔNG nối, để độc lập.
+
+
+╔═════════════════════════════════════════════════════════════════════════════╗
+║           PHẦN 6: COMPONENT DIAGRAM (Sơ đồ thành phần)                   ║
+╚═════════════════════════════════════════════════════════════════════════════╝
+
+═══ CÁCH TẠO COMPONENT DIAGRAM TRONG STARUML ═══
+
+  1. Click phải vào project → Add Diagram → Component Diagram
+  2. Đặt tên: "Component Diagram - POS QR-CODE"
+
+  Các công cụ trong Toolbox cần dùng:
+    ● Component      = hình chữ nhật có icon 2 tab nhỏ
+    ● Interface      = hình tròn nhỏ ○ (cổng giao tiếp)
+    ● Dependency     = mũi tên đứt nét (phụ thuộc)
+
+  LƯU Ý: Toolbox của Component Diagram KHÔNG có "Package".
+  Để tạo Package, làm theo cách sau:
+
+═══ BƯỚC 1: Tạo 3 Package (3 tầng) từ Model Explorer ═══
+
+  Cách tạo Package:
+    1. Nhìn panel "Model Explorer" bên trái
+    2. Click phải vào tên project (VD: "Untitled") → Add → Package
+    3. Đặt tên Package: "Tầng Trình bày (Frontend)"
+    4. Lặp lại bước 2-3 thêm 2 Package nữa:
+       - "Tầng Xử lý (Backend)"
+       - "Tầng Dữ liệu (Database)"
+
+  Kéo Package vào Diagram:
+    5. Kéo thả từng Package từ Model Explorer vào canvas
+    6. Sắp xếp 3 Package từ trên xuống dưới, kéo to ra cho rộng
+
+═══ BƯỚC 2: Thêm Component vào Package 1 (Frontend) ═══
+
+  Click vào bên trong Package "Frontend"
+  Kéo thả "Component" từ Toolbox, tạo 4 component:
+
+  1. Component "Pages" → ghi chú: 13 trang (POS, Login, Dashboard...)
+  2. Component "Components" → ghi chú: BarcodeScanner, Layout...
+  3. Component "Services" → ghi chú: API, Socket, Auth
+  4. Component "Hooks" → ghi chú: useAuth (AuthContext)
+
+═══ BƯỚC 3: Thêm Component vào Package 2 (Backend) ═══
+
+  Click vào bên trong Package "Backend"
+  Tạo 5 component:
+
+  1. Component "Routes" → ghi chú: 14 route files
+  2. Component "Middleware" → ghi chú: JWT Auth
+  3. Component "Controllers" → ghi chú: 14 controller files
+  4. Component "Socket.IO Server" → ghi chú: Real-time quét mã
+  5. Component "Config" → ghi chú: db.js, aiConfig.js
+
+═══ BƯỚC 4: Thêm Component vào Package 3 (Database) ═══
+
+  Click vào bên trong Package "Database"
+  Tạo 1 component:
+
+  1. Component "MySQL - pos_qr" → ghi chú: 12 bảng
+
+═══ BƯỚC 5: Vẽ đường kết nối giữa các tầng ═══
+
+  Dùng "Dependency" (mũi tên đứt) nối giữa các Package:
+
+  1. Nối Frontend → Backend
+     Ghi tên trên đường: "REST API (Axios) + WebSocket (Socket.IO)"
+
+  2. Nối Backend → Database
+     Ghi tên trên đường: "mysql2/promise (Connection Pool)"
+
+═══ BƯỚC 6: Thêm Actor bên ngoài (tùy chọn) ═══
+
+  Bên trái canvas: thêm Actor "Admin" và "Nhân viên"
+  Nối vào Package Frontend
+
+  Bên phải canvas:
+  - Actor "Ngân hàng" → nối vào Backend (Webhook)
+  - Actor "AI Model" → nối vào Backend (phân tích tồn kho & dự đoán)
+  - Actor "API Internet" → nối vào Backend (Open Food Facts)
+
+
+╔═════════════════════════════════════════════════════════════════════════════╗
+║                   TÓM TẮT                                                 ║
+╚═════════════════════════════════════════════════════════════════════════════╝
+
+  Tổng cộng tạo trong StarUML:
+
+  ┌──────────────────────────┬───────────┬───────────────────────────────┐
+  │  Loại Diagram            │  Số lượng │  Cách tạo trong StarUML       │
+  ├──────────────────────────┼───────────┼───────────────────────────────┤
+  │  Use Case Diagram        │     1     │  Add Diagram → Use Case       │
+  │  Đặc tả Use Case         │     7     │  Viết trong Word/Google Docs  │
+  │  Activity Diagram        │     8     │  Add Diagram → Activity       │
+  │  Sequence Diagram        │     5     │  Add Diagram → Sequence       │
+  │  Class Diagram           │     1     │  Add Diagram → Class          │
+  │  Component Diagram       │     1     │  Add Diagram → Component      │
+  ├──────────────────────────┼───────────┼───────────────────────────────┤
+  │  TỔNG CỘNG               │    23     │  16 diagram StarUML + 7 đặc tả│
+  └──────────────────────────┴───────────┴───────────────────────────────┘
+
+  Lưu file: File → Save As → "POS_QR_CODE.mdj"
+  Xuất ảnh: File → Export Diagram as → PNG (để chèn vào báo cáo Word)
+
+===============================================================================

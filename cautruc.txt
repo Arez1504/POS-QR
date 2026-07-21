@@ -1,0 +1,256 @@
+# 🔍 Phân Tích Kiến Trúc Dự Án QR-CODE POS
+
+---
+
+## 1. Mục Đích Chính Của Dự Án
+
+Đây là một **Hệ thống Bán hàng tại quầy (POS - Point of Sale)** kết hợp công nghệ **quét mã vạch/QR Code**, được thiết kế cho các cửa hàng bán lẻ nhỏ tại Việt Nam.
+
+### Điểm nổi bật:
+
+| Tính năng | Mô tả |
+|---|---|
+| 🛒 **Bán hàng POS** | Tạo đơn hàng, tính tiền, xuất hóa đơn tại quầy |
+| 📱 **Biến Điện thoại → Máy quét** | Dùng camera ĐT quét mã vạch gửi real-time về màn hình POS qua WebSocket |
+| 💳 **Thanh toán VietQR** | Tạo mã QR thanh toán chuyển khoản ngân hàng theo chuẩn VietQR |
+| 🏆 **Tích điểm thành viên** | Hệ thống loyalty: tích lũy & tiêu điểm khi mua hàng |
+| 📊 **Báo cáo & Thống kê** | Dashboard doanh thu, biểu đồ, top sản phẩm, hiệu suất nhân viên |
+| 🔄 **Quản lý ca làm việc** | Mở ca/đóng ca, đối soát két tiền mặt |
+| 📦 **Quản lý kho** | Nhập hàng, theo dõi tồn kho, lịch sử xuất/nhập |
+
+> Tóm gọn: Đây là một **ứng dụng POS full-stack hoàn chỉnh**, từ quản lý sản phẩm, bán hàng, kho hàng, nhân sự cho đến báo cáo tài chính — tất cả tích hợp quét mã vạch/QR và thanh toán không tiền mặt.
+
+---
+
+## 2. Các Công Nghệ/Thư Viện Chính
+
+### 🏗️ Kiến trúc tổng thể: **3-Tier Architecture**
+
+    [Frontend - Browser/Mobile]
+        React 19 + TypeScript
+        Vite (Build Tool)
+        TailwindCSS (Styling)
+            |
+            |--- HTTP REST API (Axios) --->  [Backend - API Server]
+            |--- WebSocket (real-time) --->      Node.js + Express 5
+                                                 Socket.IO Server
+                                                     |
+                                                     |--- mysql2/promise ---> [Database]
+                                                                               MySQL / MariaDB
+
+### 🎨 Frontend (Giao diện)
+
+| Thư viện | Phiên bản | Vai trò |
+|---|---|---|
+| **React** | 19.x | Framework UI chính, xây dựng giao diện SPA |
+| **TypeScript** | 6.x | Kiểm tra kiểu dữ liệu tĩnh, tăng độ tin cậy code |
+| **Vite** | 8.x | Build tool siêu nhanh, HMR (Hot Module Reload) |
+| **TailwindCSS** | 3.x | Framework CSS utility-first, styling nhanh |
+| **React Router DOM** | 7.x | Điều hướng giữa các trang (SPA routing) |
+| **Axios** | 1.x | HTTP client gọi API backend |
+| **Socket.IO Client** | 4.x | Kết nối WebSocket real-time (nhận mã vạch từ ĐT) |
+| **html5-qrcode** | 2.x | Quét mã vạch/QR bằng camera thiết bị |
+| **JsBarcode** | 3.x | Tạo hình ảnh mã vạch EAN/UPC để in nhãn |
+| **qrcode** | 1.x | Tạo hình ảnh mã QR (VietQR thanh toán) |
+
+### ⚙️ Backend (Xử lý logic)
+
+| Thư viện | Phiên bản | Vai trò |
+|---|---|---|
+| **Express** | 5.x | Web framework xử lý REST API |
+| **mysql2** | 3.x | Driver kết nối MySQL với Connection Pool |
+| **Socket.IO** | 4.x | Server WebSocket cho real-time scanning |
+| **jsonwebtoken (JWT)** | 9.x | Xác thực & phân quyền người dùng |
+| **bcrypt** | 6.x | Băm mật khẩu an toàn |
+| **cors** | 2.x | Cho phép frontend gọi API cross-origin |
+| **dotenv** | 17.x | Đọc biến môi trường từ file `.env` |
+| **nodemon** | 3.x *(dev)* | Auto-restart server khi code thay đổi |
+
+### 🗄️ Database
+
+| Công nghệ | Vai trò |
+|---|---|
+| **MySQL / MariaDB** | Lưu trữ dữ liệu: sản phẩm, đơn hàng, users, ca làm việc, khách hàng... |
+
+---
+
+## 3. Ý Nghĩa Các Thư Mục & File Quan Trọng
+
+### 📁 Cấu trúc tổng thể
+
+QR-CODE/
+├── 📂 database/          ← SQL scripts tạo & nâng cấp DB
+├── 📂 backend/           ← API Server (Node.js/Express)
+├── 📂 fontend/           ← Giao diện (React/Vite/TS)
+├── 📄 SETUP_GUIDE.md     ← Hướng dẫn cài đặt
+└── 📄 huongdan.txt       ← Tài liệu cấu trúc dự án
+
+---
+
+### 📂 `database/` — Cơ sở dữ liệu
+
+| File | Ý nghĩa |
+|---|---|
+| schema.sql | **Schema gốc** — tạo DB `pos_qr`, bảng `users`, `products`, `orders`, `order_items`, `shifts` + tài khoản admin mặc định |
+| migration_v2_customers.sql | **Migration v2** — thêm bảng `customers` (thành viên, tích điểm loyalty) |
+| migration_v3_activity_logs.sql | **Migration v3** — thêm bảng `activity_logs` (audit log) |
+| workbench_queries.sql | Tập hợp câu SQL mẫu để test/debug trên Workbench |
+
+> ⚠️ QUAN TRỌNG: Phải chạy theo thứ tự: schema.sql → migration_v2 → migration_v3 để DB hoạt động đầy đủ.
+
+---
+
+### 📂 `backend/` — API Server
+
+backend/
+├── .env                    ← Cấu hình DB, JWT Secret, Port
+├── server.js               ← 🚀 Entry point: khởi tạo Express + Socket.IO
+├── package.json            ← Dependencies
+└── src/
+    ├── config/
+    │   └── db.js           ← Connection Pool MySQL
+    ├── middleware/
+    │   └── authMiddleware.js  ← JWT verify + phân quyền (admin/cashier/warehouse)
+    ├── controllers/        ← 🧠 Business Logic (12 controllers)
+    │   ├── authController.js      ← Đăng ký, đăng nhập
+    │   ├── productController.js   ← CRUD sản phẩm
+    │   ├── orderController.js     ← Tạo đơn, tính điểm
+    │   ├── paymentController.js   ← Giả lập thanh toán VietQR
+    │   ├── shiftController.js     ← Quản lý ca làm việc
+    │   ├── customerController.js  ← CRUD khách hàng thành viên
+    │   ├── inventoryController.js ← Nhập kho, log xuất/nhập
+    │   ├── reportsController.js   ← Thống kê doanh thu
+    │   ├── qrController.js        ← Tạo mã vạch/QR
+    │   ├── settingController.js   ← Cài đặt cửa hàng
+    │   ├── userController.js      ← Quản lý nhân viên
+    │   └── activityController.js  ← Log hoạt động
+    ├── routes/             ← Định nghĩa API endpoints
+    ├── models/             ← Data models
+    └── utils/
+        └── logger.js       ← Ghi log hoạt động vào DB
+
+#### Luồng xử lý một API request:
+
+    Frontend                Routes              Middleware           Controller            MySQL
+       |                      |                     |                    |                   |
+       |-- HTTP Request + JWT Token -->|             |                    |                   |
+       |                      |-- authMiddleware.verifyToken() -->|       |                   |
+       |                      |                     |                    |                   |
+       |                      |           [Token hợp lệ?]               |                   |
+       |                      |              |          |                |                   |
+       |                      |           CÓ |          | KHÔNG          |                   |
+       |                      |              |          |                |                   |
+       |                      |              |       401 Unauthorized -->|                   |
+       |                      |              |                           |                   |
+       |                      |              |-- Chuyển đến Controller ->|                   |
+       |                      |              |                           |-- Query/Insert -->|
+       |                      |              |                           |<-- Kết quả -------|
+       |<---------- JSON Response ----------------------------------------|                   |
+
+---
+
+### 📂 `fontend/` — Giao diện người dùng
+
+fontend/
+├── index.html              ← Entry HTML (SPA mount point)
+├── vite.config.ts          ← Cấu hình Vite
+├── tailwind.config.js      ← Cấu hình TailwindCSS
+├── .env                    ← URL kết nối API backend
+├── tsconfig.json           ← Cấu hình TypeScript
+└── src/
+    ├── main.tsx            ← 🚀 React entry point
+    ├── App.tsx             ← 🗺️ Router chính (định tuyến trang)
+    ├── index.css           ← CSS toàn cục (Tailwind imports)
+    │
+    ├── components/         ← 🧩 UI Components tái sử dụng
+    │   ├── BarcodeScanner.tsx  ← Bộ quét camera + âm thanh beep
+    │   ├── CustomerSearch.tsx  ← Tìm khách hàng tích điểm
+    │   ├── Header.tsx          ← Thanh tiêu đề
+    │   ├── Layout.tsx          ← Sidebar + layout chung
+    │   └── common/Button.tsx   ← Nút bấm chuẩn hóa
+    │
+    ├── pages/              ← 📄 Các trang chính (12 trang)
+    │   ├── LoginPage.tsx       ← Đăng nhập
+    │   ├── DashboardPage.tsx   ← Tổng quan + biểu đồ
+    │   ├── POSPage.tsx         ← ⭐ Trang bán hàng (core)
+    │   ├── ScannerPage.tsx     ← ⭐ Trang quét ĐT (mobile)
+    │   ├── ProductsPage.tsx    ← Quản lý sản phẩm
+    │   ├── InventoryPage.tsx   ← Quản lý kho
+    │   ├── OrdersPage.tsx      ← Lịch sử đơn hàng
+    │   ├── CustomersPage.tsx   ← Quản lý khách hàng
+    │   ├── ShiftsPage.tsx      ← Quản lý ca
+    │   ├── ReportsPage.tsx     ← Báo cáo thống kê
+    │   ├── UsersPage.tsx       ← Quản lý nhân sự (Admin)
+    │   └── POSSettingsPage.tsx ← Cài đặt cửa hàng
+    │
+    ├── services/           ← 📡 Gọi API (Axios wrappers)
+    │   ├── api.ts              ← API tổng hợp
+    │   ├── authService.ts      ← API đăng nhập
+    │   ├── customerService.ts  ← API khách hàng
+    │   ├── shiftService.ts     ← API ca làm việc
+    │   ├── userService.ts      ← API nhân viên
+    │   └── socketService.ts    ← ⭐ WebSocket client
+    │
+    ├── config/             ← ⚙️ Cấu hình client
+    │   ├── api.js              ← Axios instance (auto-attach JWT)
+    │   └── config.ts           ← Hằng số (VietQR defaults)
+    │
+    ├── hooks/
+    │   └── useAuth.tsx     ← 🔐 Auth Context (trạng thái login)
+    │
+    ├── types/
+    │   └── index.ts        ← 📋 TypeScript interfaces
+    │
+    └── utils/
+        └── helpers.ts      ← 🛠️ Format tiền VNĐ, ngày giờ
+
+---
+
+## 🌟 Tóm Tắt Kiến Trúc Toàn Cảnh
+
+    📱 Điện thoại (Scanner)                    💻 Máy tính (POS)
+    ┌─────────────────────┐                   ┌──────────────────────────┐
+    │  ScannerPage.tsx    │                   │  POSPage.tsx             │
+    │  Camera quét mã vạch│                   │  Bán hàng tại quầy      │
+    └────────┬────────────┘                   │                          │
+             │                                │  Các trang quản lý       │
+             │ WebSocket:                     │  Dashboard, Kho, Báo cáo │
+             │ barcode_scanned               └─────────┬────────────────┘
+             │                                          │
+             ▼                                          │ HTTP/REST
+    ┌────────────────────────────┐                      │
+    │  ⚙️ Backend                │◄─────────────────────┘
+    │  Express REST API          │
+    │  Socket.IO Server          │
+    └────────────┬───────────────┘
+                 │ mysql2
+                 ▼
+    ┌────────────────────────────┐
+    │  🗄️ Database               │
+    │  MySQL - pos_qr            │
+    └────────────────────────────┘
+
+> 📝 **Luồng quét mã vạch real-time**: Điện thoại quét → Socket.IO gửi mã → Backend relay → POS trên laptop nhận mã ngay lập tức. Điều này cho phép biến bất kỳ smartphone nào thành máy quét mã vạch không dây!
+
+---
+
+## 🔐 Mô hình phân quyền
+
+| Vai trò | Quyền hạn |
+|---|---|
+| **Admin** | Toàn quyền: quản lý nhân viên, cài đặt, báo cáo, bán hàng |
+| **Cashier** (Thu ngân) | Bán hàng POS, mở/đóng ca, xem đơn hàng |
+| **Warehouse** (Thủ kho) | Quản lý kho, nhập hàng, kiểm kê |
+
+---
+
+## 📌 Đánh giá nhanh
+
+| Tiêu chí | Nhận xét |
+|---|---|
+| **Quy mô** | Dự án trung bình, ~24 file logic chính |
+| **Kiến trúc** | Rõ ràng: MVC pattern, tách biệt rõ FE/BE/DB |
+| **Real-time** | Có WebSocket (Socket.IO) cho tính năng quét mã |
+| **Bảo mật** | JWT + bcrypt + phân quyền middleware |
+| **Thanh toán** | Tích hợp VietQR (chuẩn Việt Nam) |
+| **Đặc biệt** | Biến ĐT thành máy quét không dây — rất sáng tạo! |
